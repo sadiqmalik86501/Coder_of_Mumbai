@@ -1,7 +1,9 @@
+import json 
+import pandas as pd
+
 with open("data.txt","r",encoding="utf-8") as f:
     data=f.read()
     #print(data)
-
 chunks=data.split("\n\n")
 chunks=[c for c in chunks if len(c)>6]
 #print(chunks)
@@ -74,3 +76,65 @@ def parse_chunk(chunk):
 
 parse_data=[parse_chunk(c) for c in chunks]
 #print(parse_data[0])
+
+all_chunks=[]
+for chunk in chunks:
+     parse_chunks=parse_chunk(chunk)
+     if parse_chunks:
+         all_chunks.append(parse_chunks)
+
+#print(all_chunks[1])
+
+# 🛟Yahe ak csv File ko save krega 
+df=pd.DataFrame(all_chunks)
+print(df.head())
+save_csv=df.to_csv("Instagram_following.csv",index=False,encoding="utf-8")
+print(save_csv)
+
+# Ye ak json file ko save krega 
+with open ("Instagarm_following.jaon","w",encoding="utf-8")as f:
+    data=json.dump(all_chunks,f,ensure_ascii=False,indent=4)
+    print(f"json file successfully run-->{data}")
+
+
+#Who Has The minimum Post
+for chunk in all_chunks:
+    if chunk["Number_of_post"]==min(c["Number_of_post"] for c in all_chunks):
+        print(f"The Minimum post is-->{chunk}")
+
+print()
+
+#Who Has The Maximum post
+for chunks in all_chunks:
+    if chunks["Number_of_post"]==max(c["Number_of_post"] for c in all_chunks):
+        print(f"The Maximum post is-->{chunks}")
+
+#Who Has The Minimum Follower
+for chunks in all_chunks:
+    if chunks["Number_of_follower"]==min(c["Number_of_follower"] for c in all_chunks):
+        print(f"The Minimum follower is-->{chunks}")
+
+print()
+
+#Who Has The Maximum Follower
+for chunks in all_chunks:
+    if chunks["Number_of_follower"]==max(c["Number_of_follower"] for c in all_chunks):
+        print(f"Maximum follower is -->{chunks}")
+print()
+
+#Who Has The Minimum Following
+for chunks in all_chunks:
+    if chunks["Number_of_following"]==min(c["Number_of_following"] for c in all_chunks):
+        print(f"Minimum Number is-->{chunks}")
+print()
+
+#Who Has The Maximum Following
+for chunk in all_chunks:
+    if chunk["Number_of_following"]==max(c["Number_of_following"] for c in all_chunks):
+        print(f"Maximum Following is-->{chunk}")
+
+
+categury=set()
+for chunk in all_chunks:
+    categury.add(chunk["Type_of_page"])
+print(categury,len(categury))
